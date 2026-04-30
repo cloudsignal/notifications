@@ -1,0 +1,39 @@
+# @cloudsignal/notifications
+
+> Realtime in-app notifications for React, powered by CloudSignal MQTT
+
+## Install
+npm install @cloudsignal/notifications @cloudsignal/mqtt-client
+
+## Usage
+Wrap with <NotificationProvider>, use hooks/components inside.
+
+## Provider
+NotificationProvider: userId, connection, channels?, maxNotifications?, onNotification?, debug?
+  connection: { host, username?, password?, organizationId?, secretKey?, externalToken?, tokenServiceUrl? }
+
+## Hooks
+useNotifications() → { notifications: InternalNotification[], markAsRead, markAllAsRead, dismiss, clearAll }
+useUnreadCount() → { count, reset }
+useChannels() → { channels: string[], subscribe(id), unsubscribe(id) }
+useNotificationEvent(type, callback) → void
+
+## Components
+NotificationBell: maxVisible?, onNotificationClick?, renderEmpty?, className?
+NotificationToast: position?, duration?, maxVisible?, onClick?, renderToast?
+NotificationList: onNotificationClick?, renderItem?, renderEmpty?, className?
+NotificationItem: notification, onClick?, onDismiss?
+
+## Types
+Notification: { id, type, title, body, icon?, image?, action?, category?, channel?, sender?, ts, data? }
+InternalNotification: extends Notification + { isRead, receivedAt }
+
+## MQTT Topics
+$notifications/{userId}/inbox — personal notifications
+$notifications/{userId}/inbox/{category} — categorized personal
+$notifications/channels/{channelId} — channel broadcasts
+
+## Rules
+- Receive-only SDK — never publish from client
+- Server publishes via MQTT with secret key
+- QoS 1, no retain
